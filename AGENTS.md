@@ -15,11 +15,11 @@
 以下區塊由首次初始化或後續明確的專案級變更維護；一般任務不要重寫其他規則。
 
 <!-- BEGIN CODEX PROJECT QUICKSTART -->
-- 初始化狀態：`UNINITIALIZED`
-- 專案目的：`待初始化`
-- 主要技術：`待初始化`
-- 主要入口：`待初始化`
-- 最快驗證：`待初始化；在確認前禁止猜測或執行`
+- 初始化狀態：`INITIALIZED`
+- 專案目的：可重複使用 3D 列印貓條擠壓本體，搭配可換的商用 PP 圓匙，降低跨貓群食器交叉接觸
+- 主要技術：OpenSCAD、ASCII STL、PETG 列印、Python 3.11＋trimesh（幾何驗證）
+- 主要入口：`current/cat_treat_feeder_v1_14.scad`；`current/*.stl`
+- 最快驗證：`python scripts/validate_stl.py`（只驗幾何，並非實物安全）
 <!-- END CODEX PROJECT QUICKSTART -->
 
 若狀態仍為 `UNINITIALIZED`：

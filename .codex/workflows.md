@@ -1,67 +1,33 @@
-# Development Workflows
+# Development Workflows — CURRENT STATE
 
-> 類型：Current state。保存可重現的安裝、執行與驗證方式。Codex 不得執行尚未查證的占位命令。
+## 環境
+- CAD 源檔：OpenSCAD `current/cat_treat_feeder_v1_14.scad`。
+- STL 幾何檢查：Python 3.11、trimesh 4.x、numpy 1.24+；GitHub Actions workflow 提供安裝與執行基準。
+- 3D 印表機、PETG、切片器型號因使用者環境而異；屬**待確認**，不可假定一致。
 
-## 環境前提
+## 已知可用的最小檢查
+```bash
+python scripts/validate_stl.py
+```
+本命令在本地整理環境對四個 V1.14 STL 通過 watertight、winding、單一實體和正體積檢查。遠端 CI 狀態以 GitHub Actions 實際結果為準。
 
-| 項目 | 要求 | 查證來源 |
-| --- | --- | --- |
-| 作業系統 | 待初始化 | 待初始化 |
-| Runtime 版本 | 待初始化 | 待初始化 |
-| 套件管理器 | 待初始化 | 待初始化 |
-| 必要本機服務 | 待初始化 | 待初始化 |
-| 必要環境變數 | 只列變數名稱與用途，不列值；待初始化 | 待初始化 |
+## 依 OpenSCAD 產生 STL（候選命令，尚未在新遠端環境驗收）
+```bash
+openscad -o base_body.stl -D 'part="body_side_print"' current/cat_treat_feeder_v1_14.scad
+openscad -o slider.stl -D 'part="slider_print"' current/cat_treat_feeder_v1_14.scad
+openscad -o front_coupon.stl -D 'part="front_snap_coupon"' current/cat_treat_feeder_v1_14.scad
+openscad -o two_point_coupon.stl -D 'part="two_clip_spacing_coupon"' current/cat_treat_feeder_v1_14.scad
+```
+執行前須核對 SCAD 的 `part` selector；OpenSCAD 版本、輸出尺寸、輸出實體一致性仍待本機實測。
 
-## Canonical Commands
+## 列印／試裝 SOP
+1. PETG 參考起始值：0.2 mm 層高、4 道外牆、25–35% 填充（非保證）。
+2. 先印前端小試片，再印 52 mm 連體試片，最後才印整組底座與滑塊。
+3. 有應力發白、裂痕、過度變形、滑塊卡滯、手感需強行扭轉則停止。
+4. V1.14 側立列印，重新確認前緣擋板共面與支撐預覽。
+5. 先空載測試滑塊，再檢查肉泥出口落點、手指夾傷與貓咪舔食時的安全性。
 
-初始化時應從 manifest、CI、Makefile、task runner、官方 README 或實際測試取得命令。無法證實時保留「待確認」，不要憑生態慣例猜測。
-
-| 用途 | 命令 | 工作目錄 | 狀態／最後查證 |
-| --- | --- | --- | --- |
-| 安裝／同步依賴 | 待確認，禁止執行 | repository root | Unverified |
-| 啟動開發環境 | 待確認，禁止執行 | repository root | Unverified |
-| Build | 待確認，禁止執行 | repository root | Unverified |
-| Format | 待確認，禁止執行 | repository root | Unverified |
-| Lint | 待確認，禁止執行 | repository root | Unverified |
-| Type check | 待確認，禁止執行 | repository root | Unverified |
-| 最小 smoke test | 待確認，禁止執行 | repository root | Unverified |
-| 完整 test suite | 待確認，禁止執行 | repository root | Unverified |
-
-## 驗證矩陣
-
-| 變更類型 | 最小必要檢查 | 需要擴大驗證的條件 |
-| --- | --- | --- |
-| 純文件 | 連結／格式／範例一致性；待初始化 | 文件含可執行命令或契約 |
-| 小型單模組邏輯 | 相關單元測試；待初始化 | 影響共用介面或資料流 |
-| API／CLI／schema／檔案格式 | 契約測試＋相容性檢查；待初始化 | 對外 consumer 不在此 repo |
-| 資料轉換／migration | fixture 驗證＋失敗／回復路徑；待初始化 | 可能改寫正式資料 |
-| UI | 靜態／component／E2E／視覺檢查；待初始化 | layout、互動或 browser 相容性改變 |
-| 部署／基礎設施 | config validation＋安全的 smoke test；待初始化 | 會觸及外部環境或不可逆資源 |
-
-## 測試資料與外部服務
-
-- 最小 fixture：`待初始化`
-- 測試是否允許網路：`待確認`
-- 外部服務替代方式：`待確認；mock 必須明確揭露，不得冒充正式成功`
-- 測試產物位置與清理方式：`待初始化`
-
-## 常見失敗與替代驗證
-
-若是可重現且尚未解決的限制，詳細記在 `known_issues.md`；本節只保留驗證時該怎麼做。
-
-| 限制 | 首選驗證 | 安全替代 | 不足之處 |
-| --- | --- | --- | --- |
-| 目前未確認 | 待初始化 | 待初始化 | 待初始化 |
-
-## 完成前檢查
-
-- 使用的是此 repo 已確認的 runtime 與 package manager。
-- 先跑最相關檢查，再依風險擴大；不為小改動無條件重裝全部依賴。
-- 不把資料庫、雲端、寄信、發布、刪除或 migration 當成無副作用測試。
-- 所有未執行或失敗的檢查都在最終回報中明確區分。
-
-## 維護規則
-
-- 命令變更時原地更新表格，附上可查證來源與最後驗證時間。
-- 臨時 debug 命令、完整 log 與一次性 workaround 不留在本檔。
-- 真正成為長期限制的問題移到 `known_issues.md`；有長期取捨的流程改變移到 `decisions.md`。
+## 完成定義
+- CAD/STL 必須封閉、單一連通、正體積，前後卡扣位置吻合；滑軌對稱且滑塊整段無碰撞。
+- 對風險較高的卡扣變更必須有**實物試印結果**，不能以 CAD PASS 代替。
+- 修改尺寸須更新 `docs/measurements.md`、`.codex/contracts.md`、相關 current docs／backlog。

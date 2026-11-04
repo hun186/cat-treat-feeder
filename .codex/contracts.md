@@ -1,62 +1,20 @@
-# Interface Contracts
+# Interface Contracts — CURRENT STATE
 
-> 類型：Current state。記錄需要相容、可被其他模組或系統依賴的介面；不限於 HTTP API。
+此專案目前**沒有 HTTP API、資料庫或 CLI 服務契約**；需要維護的是 CAD/實體機械尺寸與檔案輸出契約。
 
-## 契約範圍
+## CAD-001：食匙尺寸（Draft，依一般尺量）
+- PP 大圓匙約 155 mm，全長；匙面約 43 × 50 mm；柄最窄約 9 mm、最寬約 14 mm、厚約 6 mm、略帶弧度。
+- 尾端基準：最寬 35 mm、最窄 87 mm、匙頭交界 102 mm。
+- 採購來源示例及餐後再利用界線詳見 `docs/spoon-sourcing-and-reuse.md`。
+- **不是所有長度相同湯匙都相容**；更換來源必須重新量測局部柄尺寸。
 
-依專案實況保留適用項目：
+## CAD-002：V1.14 卡扣／軌道（Draft）
+- 前端內寬 9.5 mm／入口 8.7 mm；後端內寬 13.5 mm／入口 11.7 mm。
+- 卡扣中心距 52 mm；基座兩端均有補強，前端倒鉤採較淺入口。
+- 滑軌左右對稱，名義側向間隙每側 0.6 mm；底板與最前擋板共切面 x=141 mm。
 
-- HTTP／RPC API
-- CLI command、argument、exit code 與 stdout／stderr 格式
-- Python／library public API
-- Database schema、migration 與 query boundary
-- File、dataset、model artifact 或 export format
-- Event、queue message、batch handoff 與 webhook
-- 跨 repository 的輸入／輸出成果
-
-若目前沒有需穩定維持的對外或跨模組介面，明確寫「目前無已確認的穩定契約」，不要為填表捏造 API。
-
-## 契約索引
-
-| ID | 類型 | 名稱 | Producer／Owner | Consumer | 權威定義 | 穩定性 |
-| --- | --- | --- | --- | --- | --- | --- |
-| 待初始化 | 待初始化 | 待初始化 | 待初始化 | 待確認 | `待初始化` | 待確認 |
-
-## 通用相容性規則
-
-- `待初始化：例如欄位新增可向後相容、刪除／改名需版本化。`
-- 錯誤表示與重試語意：`待初始化`
-- 時間、timezone、encoding、locale 與 identifier 規則：`待初始化`
-- 敏感欄位與遮蔽規則：`待初始化`
-
-## 契約詳細內容
-
-每個重要契約使用穩定 ID，並依實際類型保留必要欄位。
-
-### `待初始化：CONTRACT-001 名稱`
-
-- 類型：`待初始化`
-- 狀態：`Draft | Stable | Deprecated | Removed`
-- 權威定義：`待初始化，例如 schema / code / OpenAPI / parser / test`
-- Producer／Owner：`待初始化`
-- Consumer：`待確認`
-- 輸入：`待初始化`
-- 輸出：`待初始化`
-- 驗證與約束：`待初始化`
-- 錯誤／exit code／失敗語意：`待初始化`
-- 版本與相容性：`待初始化`
-- 安全與敏感資訊：`待初始化`
-- 契約測試：`待初始化`
-
-## Deprecated／Migration
-
-| 舊契約 | 替代契約 | 過渡方式 | 移除條件／日期 |
-| --- | --- | --- | --- |
-| 目前沒有已確認項目 | — | — | — |
-
-## 維護規則
-
-- 介面實作改變時同步更新 current contract 與 contract test。
-- 不以 README 範例取代 schema、parser 或測試等權威定義。
-- 若需要破壞性變更，先記錄 consumer、遷移路徑與相容性決策；必要時新增 `decisions.md` 紀錄。
-- 過時細節不追加日期流水帳；原地更新，並透過 Git 或 decision 追溯原因。
+## ART-001：模型檔與驗證
+- 可編輯來源：`current/cat_treat_feeder_v1_14.scad`，以 `part` selector 輸出零件。
+- 固定模型：`current/*.stl`，需為封閉、單一實體、正體積；應由 CI 驗證。
+- 幾何檢查通過**不構成**實體安全、食品接觸或獸醫認證。
+- 若源碼參數改變，需同步重新輸出 STL，維持 source/artifact 一致。
