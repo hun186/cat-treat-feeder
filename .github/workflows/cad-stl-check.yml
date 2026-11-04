@@ -1,0 +1,27 @@
+name: CAD STL geometry sanity
+on:
+  push:
+    paths:
+      - 'current/**'
+      - 'scripts/validate_stl.py'
+      - '.github/workflows/cad-stl-check.yml'
+  pull_request:
+    paths:
+      - 'current/**'
+      - 'scripts/validate_stl.py'
+      - '.github/workflows/cad-stl-check.yml'
+  workflow_dispatch:
+jobs:
+  current-stl:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install geometry checks
+        run: python -m pip install 'numpy>=1.24,<3' 'trimesh>=4,<5'
+      - name: Verify current printable parts
+        run: python scripts/validate_stl.py

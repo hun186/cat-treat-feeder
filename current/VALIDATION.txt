@@ -1,0 +1,6 @@
+V1.14 STL geometry sanity summary (2026-11-04)
+Base body watertight=true winding_consistent=true components=1 volume_mm3=24046.99
+Front snap coupon watertight=true winding_consistent=true components=1 volume_mm3=3874.26
+Squeeze slider watertight=true winding_consistent=true components=1 volume_mm3=5649.63
+Two-point spacing coupon watertight=true winding_consistent=true components=1 volume_mm3=8835.90
+These are geometric checks only, NOT fit/safety/cleanability/sterility/cat-use certifications.
